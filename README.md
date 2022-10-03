@@ -1,4 +1,6 @@
-This is a [Plasmo extension](https://docs.plasmo.com/) project bootstrapped with [`plasmo init`](https://www.npmjs.com/package/plasmo).
+# Inline Translator
+
+This project is used to help me reading english article faster by inject the translation to the page, then I can quickly pick up the meaning of the paragraph by reading my native langue and understand detail by reading the english.
 
 ## Getting Started
 
