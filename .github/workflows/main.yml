@@ -1,0 +1,41 @@
+name: Release
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16.x]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3.5.0
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Build
+        run: |
+          yarn install
+          yarn build --target=firefox-mv2
+          yarn build --target=chrome-mv3
+      - name: Check
+        run: |
+          ls -la build
+      - name: Zip
+        run: |
+          cd build/firefox-mv2-prod
+          zip -r ../../firefox-mv2-prod.zip *
+          cd ../chrome-mv3-prod
+          zip -r ../../chrome-mv3-prod.zip *
+          cd ../..
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            firefox-mv2-prod.zip
+            chrome-mv3-prod.zip
