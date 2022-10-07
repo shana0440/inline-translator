@@ -1,14 +1,19 @@
 import { injectAfter } from "~app/injector"
-import { queryItems, queryParagraphs } from "~app/parser"
 
 interface TagForTranslateElements {
   elements: NodeListOf<HTMLElement>
   tag: keyof HTMLElementTagNameMap
 }
 
+const TRANSLATED_KEY = "translated"
+
 chrome.runtime.onMessage.addListener(() => {
-  const paragraphs = queryParagraphs(document)
-  const items = queryItems(document)
+  const paragraphs = document.querySelectorAll<HTMLParagraphElement>(
+    `p:not([data-${TRANSLATED_KEY}])`
+  )
+  const items = document.querySelectorAll<HTMLLIElement>(
+    `li:not([data-${TRANSLATED_KEY}])`
+  )
   const translateElements: TagForTranslateElements[] = [
     {
       elements: paragraphs,
@@ -23,7 +28,9 @@ chrome.runtime.onMessage.addListener(() => {
   translateElements.forEach(({ elements, tag }) => {
     elements.forEach((it) => {
       chrome.runtime.sendMessage({ text: it.innerText }, (resp) => {
-        injectAfter(it, tag, resp.text)
+        const injectedNode = injectAfter(it, tag, resp.text)
+        injectedNode.dataset[TRANSLATED_KEY] = "true"
+        it.dataset[TRANSLATED_KEY] = "true"
       })
     })
   })
