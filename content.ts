@@ -8,6 +8,11 @@ interface TagForTranslateElements {
 const TRANSLATED_KEY = "translated"
 
 chrome.runtime.onMessage.addListener(() => {
+  const heads = document.querySelectorAll<HTMLHeadElement>(
+    Array.apply(null, Array(6))
+      .map((_, index) => `h${index + 1}:not([data-${TRANSLATED_KEY}])`)
+      .join(",")
+  )
   const paragraphs = document.querySelectorAll<HTMLParagraphElement>(
     `p:not([data-${TRANSLATED_KEY}])`
   )
@@ -15,6 +20,10 @@ chrome.runtime.onMessage.addListener(() => {
     `li:not([data-${TRANSLATED_KEY}])`
   )
   const translateElements: TagForTranslateElements[] = [
+    {
+      elements: heads,
+      tag: "p"
+    },
     {
       elements: paragraphs,
       tag: "p"
