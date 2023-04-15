@@ -14,13 +14,16 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 const InlineTranslateId = "inline-translate"
 
-chrome.contextMenus.create({
+// NOTE: support firefox, firefox using browser instead of chrome to register context menu
+declare const browser: typeof chrome
+const theBrowser = navigator.userAgent.indexOf("Firefox") ? browser : chrome
+theBrowser.contextMenus.create({
   id: InlineTranslateId,
   title: "Inline Translate",
   contexts: ["all"]
 })
 
-chrome.contextMenus.onClicked.addListener((info, tab) => {
+theBrowser.contextMenus.onClicked.addListener((info, tab) => {
   if (info.menuItemId === InlineTranslateId) {
     const storage = new Storage()
     storage.get("language").then((language) => {
