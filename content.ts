@@ -7,7 +7,7 @@ interface TagForTranslateElements {
 
 const TRANSLATED_KEY = "translated"
 
-chrome.runtime.onMessage.addListener(() => {
+chrome.runtime.onMessage.addListener(({ language }) => {
   const heads = document.querySelectorAll<HTMLHeadElement>(
     Array.apply(null, Array(6))
       .map((_, index) => `h${index + 1}`)
@@ -35,7 +35,7 @@ chrome.runtime.onMessage.addListener(() => {
       if (it.dataset[TRANSLATED_KEY]) {
         return
       }
-      chrome.runtime.sendMessage({ text: it.innerText }, (resp) => {
+      chrome.runtime.sendMessage({ text: it.innerText, language }, (resp) => {
         const injectedNode = injectAfter(it, tag, resp.text)
         injectedNode.dataset[TRANSLATED_KEY] = "true"
         it.dataset[TRANSLATED_KEY] = "true"
