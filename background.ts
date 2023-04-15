@@ -16,7 +16,7 @@ const InlineTranslateId = "inline-translate"
 
 // NOTE: support firefox, firefox using browser instead of chrome to register context menu
 declare const browser: typeof chrome
-const theBrowser = navigator.userAgent.indexOf("Firefox") ? browser : chrome
+const theBrowser = typeof browser !== "undefined" ? browser : chrome
 theBrowser.contextMenus.create({
   id: InlineTranslateId,
   title: "Inline Translate",
