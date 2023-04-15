@@ -163,7 +163,11 @@ function IndexPopup() {
         onChange={storeLanguage}
         value={language}>
         {Object.entries(supportLanguage).map(([name, value]) => {
-          return <option value={value}>{name}</option>
+          return (
+            <option key={value} value={value}>
+              {name}
+            </option>
+          )
         })}
       </select>
       <button className="rounded bg-sky-600 text-white h-7" onClick={translate}>
