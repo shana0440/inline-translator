@@ -28,10 +28,8 @@
   },
   "manifest": {
     "permissions": [
-      "contextMenus"
-    ],
-    "host_permissions": [
-      "https://*/*"
+      "contextMenus",
+      "activeTab"
     ]
   }
 }
