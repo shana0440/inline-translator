@@ -2,7 +2,7 @@
   "name": "inline-translator",
   "displayName": "Inline translator",
   "version": "0.1.2",
-  "description": "A basic Plasmo extension.",
+  "description": "A extension that translates content and keep the original content.",
   "author": "kwguo",
   "scripts": {
     "dev": "plasmo dev",
