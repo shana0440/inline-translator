@@ -28,6 +28,7 @@
   },
   "manifest": {
     "permissions": [
+      "webNavigation",
       "contextMenus",
       "activeTab"
     ]

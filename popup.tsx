@@ -2,6 +2,8 @@ import { ChangeEvent, useCallback } from "react"
 
 import { useStorage } from "@plasmohq/storage/hook"
 
+import { LANGUAGE } from "~app/constant"
+
 import "./style.css"
 
 // refs: https://cloud.google.com/translate/docs/languages
@@ -143,36 +145,30 @@ const supportLanguage = {
 }
 
 function IndexPopup() {
-  const [language, setLanguage] = useStorage<string>("language")
+  const [language, setLanguage] = useStorage<string>(LANGUAGE)
 
   const storeLanguage = useCallback((e: ChangeEvent<HTMLSelectElement>) => {
     setLanguage(e.target.value)
   }, [])
 
-  const translate = useCallback(() => {
-    chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
-      chrome.tabs.sendMessage(tabs[0].id, { language })
-    })
-  }, [language])
-
   return (
-    <div className="flex flex-col p-[16px] gap-2">
-      <h2>Inline Translator</h2>
-      <select
-        className="h-7 border rounded"
-        onChange={storeLanguage}
-        value={language}>
-        {Object.entries(supportLanguage).map(([name, value]) => {
-          return (
-            <option key={value} value={value}>
-              {name}
-            </option>
-          )
-        })}
-      </select>
-      <button className="rounded bg-sky-600 text-white h-7" onClick={translate}>
-        translate
-      </button>
+    <div className="flex flex-col p-[16px] gap-2 w-64">
+      <h2>Inline Translator Settings</h2>
+      <label className="w-full">
+        <span>Target language</span>
+        <select
+          className="h-7 border rounded w-full"
+          onChange={storeLanguage}
+          value={language}>
+          {Object.entries(supportLanguage).map(([name, value]) => {
+            return (
+              <option key={value} value={value}>
+                {name}
+              </option>
+            )
+          })}
+        </select>
+      </label>
     </div>
   )
 }

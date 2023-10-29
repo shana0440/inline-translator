@@ -1,8 +1,33 @@
-import { injectAfter } from "~app/injector"
+import {
+  EVENT_CLEAR_TRANSLATE,
+  EVENT_TRANSLATE,
+  TRANSLATED_KEY
+} from "~app/constant"
+import { injectAfter, removeInjectedElements } from "~app/injector"
 
-const TRANSLATED_KEY = "translated"
+chrome.runtime.onMessage.addListener(({ event, language }) => {
+  switch (event) {
+    case EVENT_TRANSLATE:
+      translatePage(language)
+      break
+    case EVENT_CLEAR_TRANSLATE:
+      clearTranslations()
+      break
+  }
+})
 
-chrome.runtime.onMessage.addListener(({ language }) => {
+function clearTranslations() {
+  const elements = document.body.parentNode?.querySelectorAll(
+    `[data-${TRANSLATED_KEY}="true"]`
+  )
+  elements?.forEach((element: HTMLElement) => {
+    delete element.dataset[TRANSLATED_KEY]
+  })
+  removeInjectedElements(document.body)
+}
+
+function translatePage(language: string) {
+  clearTranslations()
   const textNodes = getTextNodes(document.body)
 
   const nodes = new Set<HTMLElement>()
@@ -24,7 +49,7 @@ chrome.runtime.onMessage.addListener(({ language }) => {
       injectedNode.dataset[TRANSLATED_KEY] = "true"
     })
   })
-})
+}
 
 function getTextNodes(el: Node) {
   var n: Node,

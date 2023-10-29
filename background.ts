@@ -1,5 +1,6 @@
 import { Storage } from "@plasmohq/storage"
 
+import { EVENT_CLEAR_TRANSLATE, EVENT_TRANSLATE, LANGUAGE } from "~app/constant"
 import { translate } from "~app/translator"
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -26,8 +27,18 @@ theBrowser.contextMenus.create({
 theBrowser.contextMenus.onClicked.addListener((info, tab) => {
   if (info.menuItemId === InlineTranslateId) {
     const storage = new Storage()
-    storage.get("language").then((language) => {
-      chrome.tabs.sendMessage(tab.id, { language })
+    storage.get(LANGUAGE).then((language) => {
+      chrome.tabs.sendMessage(tab.id, { event: EVENT_TRANSLATE, language })
     })
   }
+})
+
+theBrowser.webNavigation.onHistoryStateUpdated.addListener((details) => {
+  const storage = new Storage()
+  storage.get(LANGUAGE).then((language) => {
+    chrome.tabs.sendMessage(details.tabId, {
+      event: EVENT_CLEAR_TRANSLATE,
+      language
+    })
+  })
 })

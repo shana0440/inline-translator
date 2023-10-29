@@ -1,0 +1,5 @@
+export const TRANSLATED_KEY = "translated"
+export const INJECTED_KEY = "injected"
+export const LANGUAGE = "language"
+export const EVENT_TRANSLATE = "translate"
+export const EVENT_CLEAR_TRANSLATE = "clear_translate"
