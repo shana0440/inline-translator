@@ -1,10 +1,12 @@
-import { ChangeEvent, useCallback } from "react"
+import { ChangeEvent, KeyboardEvent, useCallback, useState } from "react"
 
 import { useStorage } from "@plasmohq/storage/hook"
 
-import { LANGUAGE } from "~app/constant"
+import { HOT_KEYS, LANGUAGE } from "~app/constant"
 
 import "./style.css"
+
+import { type HotKey, hotKeyToText, isValidHotKey } from "~app/hot_keys"
 
 // refs: https://cloud.google.com/translate/docs/languages
 const supportLanguage = {
@@ -146,9 +148,35 @@ const supportLanguage = {
 
 function IndexPopup() {
   const [language, setLanguage] = useStorage<string>(LANGUAGE)
+  const [persistHotKeys, setPersistHotKeys] = useStorage<HotKey>(HOT_KEYS)
+  const [hotKeys, setHotKeys] = useState<HotKey>(persistHotKeys)
 
   const storeLanguage = useCallback((e: ChangeEvent<HTMLSelectElement>) => {
     setLanguage(e.target.value)
+  }, [])
+
+  const recordHotKeys = useCallback((e: KeyboardEvent<HTMLInputElement>) => {
+    setHotKeys({
+      altKey: e.altKey,
+      ctrlKey: e.ctrlKey,
+      shiftKey: e.shiftKey,
+      metaKey: e.metaKey,
+      code: e.code.startsWith("Key") ? e.code : undefined
+    })
+    e.stopPropagation()
+    e.preventDefault()
+  }, [])
+
+  const saveHotKeys = useCallback(() => {
+    if (isValidHotKey(hotKeys)) {
+      setPersistHotKeys(hotKeys)
+    } else {
+      setHotKeys(persistHotKeys)
+    }
+  }, [hotKeys])
+
+  const closePopup = useCallback(() => {
+    window.close()
   }, [])
 
   return (
@@ -169,6 +197,20 @@ function IndexPopup() {
           })}
         </select>
       </label>
+      <label className="w-full">
+        <span>Hot keys</span>
+        <input
+          className="h-7 border rounded w-full px-2"
+          onKeyDown={recordHotKeys}
+          onKeyUp={saveHotKeys}
+          value={hotKeyToText(hotKeys || persistHotKeys)}
+        />
+      </label>
+      <button
+        className="rounded bg-sky-600 text-white h-7"
+        onClick={closePopup}>
+        Close
+      </button>
     </div>
   )
 }

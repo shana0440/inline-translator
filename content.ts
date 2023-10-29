@@ -1,9 +1,23 @@
+import { Storage } from "@plasmohq/storage"
+
 import {
   EVENT_CLEAR_TRANSLATE,
   EVENT_TRANSLATE,
+  HOT_KEYS,
+  LANGUAGE,
   TRANSLATED_KEY
 } from "~app/constant"
+import { isMatchHotKey, isValidHotKey } from "~app/hot_keys"
 import { injectAfter, removeInjectedElements } from "~app/injector"
+
+window.addEventListener("keydown", async (e) => {
+  const storage = new Storage()
+  const hotKey = await storage.get(HOT_KEYS)
+  const language = await storage.get(LANGUAGE)
+  if (isValidHotKey(hotKey) && isMatchHotKey(hotKey, e)) {
+    translatePage(language)
+  }
+})
 
 chrome.runtime.onMessage.addListener(({ event, language }) => {
   switch (event) {
