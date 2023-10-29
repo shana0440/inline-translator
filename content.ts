@@ -5,6 +5,8 @@ const TRANSLATED_KEY = "translated"
 chrome.runtime.onMessage.addListener(({ language }) => {
   const textNodes = getTextNodes(document.body)
 
+  const nodes = new Set<HTMLElement>()
+
   textNodes.forEach((it) => {
     const translateElement = getTranslatableElement(it.parentElement)
     if (!translateElement || translateElement.dataset[TRANSLATED_KEY]) {
@@ -12,11 +14,14 @@ chrome.runtime.onMessage.addListener(({ language }) => {
     }
     translateElement.dataset[TRANSLATED_KEY] = "true"
     getLeafNodes([translateElement]).forEach((it) => {
-      chrome.runtime.sendMessage({ text: it.innerText, language }, (resp) => {
-        const injectedNode = injectAfter(it, "p", resp.text)
-        injectedNode.classList.add(...translateElement.classList)
-        injectedNode.dataset[TRANSLATED_KEY] = "true"
-      })
+      nodes.add(it)
+    })
+  })
+
+  nodes.forEach((it) => {
+    chrome.runtime.sendMessage({ text: it.innerText, language }, (resp) => {
+      const injectedNode = injectAfter(it, "p", resp.text)
+      injectedNode.dataset[TRANSLATED_KEY] = "true"
     })
   })
 })
