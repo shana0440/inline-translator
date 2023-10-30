@@ -1,7 +1,7 @@
 {
   "name": "inline-translator",
   "displayName": "Inline translator",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "A extension that translates content and keep the original content.",
   "author": "kwguo",
   "scripts": {
