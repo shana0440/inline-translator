@@ -1,4 +1,4 @@
-name: Release
+name: CD
 on:
   push:
     tags:
@@ -20,9 +20,9 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: Build
         run: |
-          yarn install
-          yarn build --target=firefox-mv2
-          yarn build --target=chrome-mv3
+          npm ci
+          npm run build -- --target=firefox-mv2
+          npm run build -- --target=chrome-mv3
       - name: Check
         run: |
           ls -la build
