@@ -41,6 +41,13 @@ function clearTranslations() {
 }
 
 function translatePage(language: string) {
+  if (
+    document.body.parentNode?.querySelector(`[data-${TRANSLATED_KEY}="true"]`)
+  ) {
+    clearTranslations()
+    return
+  }
+
   clearTranslations()
   const textNodes = getTextNodes(document.body)
 
