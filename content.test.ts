@@ -31,6 +31,22 @@ beforeEach(async () => {
   await import("./content")
 })
 
+test("inserts translation without adding a layout sibling", () => {
+  onMessage(
+    { event: EVENT_TRANSLATE, language: "es" },
+    {} as chrome.runtime.MessageSender,
+    vi.fn()
+  )
+
+  const translation = document.querySelector(
+    'p > [data-injected="true"]'
+  ) as HTMLElement
+  expect(translation).not.toBeNull()
+  expect(translation.tagName).toBe("SPAN")
+  expect(translation.style.display).toBe("block")
+  expect(document.querySelector('body > [data-injected="true"]')).toBeNull()
+})
+
 test("triggering translation again removes the translation", () => {
   onMessage(
     { event: EVENT_TRANSLATE, language: "es" },

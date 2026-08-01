@@ -8,7 +8,7 @@ import {
   TRANSLATED_KEY
 } from "~app/constant"
 import { isMatchHotKey, isValidHotKey } from "~app/hot_keys"
-import { injectAfter, removeInjectedElements } from "~app/injector"
+import { injectInside, removeInjectedElements } from "~app/injector"
 
 window.addEventListener("keydown", async (e) => {
   const storage = new Storage()
@@ -66,7 +66,7 @@ function translatePage(language: string) {
 
   nodes.forEach((it) => {
     chrome.runtime.sendMessage({ text: it.innerText, language }, (resp) => {
-      const injectedNode = injectAfter(it, "p", resp.text)
+      const injectedNode = injectInside(it, resp.text)
       injectedNode.dataset[TRANSLATED_KEY] = "true"
     })
   })

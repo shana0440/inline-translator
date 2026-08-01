@@ -1,15 +1,12 @@
 import { INJECTED_KEY } from "./constant"
 
-export function injectAfter(
-  node: HTMLElement,
-  tagName: keyof HTMLElementTagNameMap,
-  text: string
-) {
-  const newNode = document.createElement(tagName)
+export function injectInside(node: HTMLElement, text: string) {
+  const newNode = document.createElement("span")
+  newNode.style.display = "block"
   newNode.style.color = "rgb(21 128 61)"
   newNode.innerText = text
   newNode.dataset[INJECTED_KEY] = "true"
-  node.parentNode.insertBefore(newNode, node.nextSibling)
+  node.appendChild(newNode)
   return newNode
 }
 
